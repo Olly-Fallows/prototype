@@ -11,12 +11,12 @@
 #### Stories
 - [x] download sprites to use
 - [x] add empty player
-- [ ] add movement component
-- [ ] add player animation controller
-- [ ] add input component
+- [x] add movement component
+- [x] add player animation controller
+- [x] add input component
 - [ ] add dodge roll
-- [ ] add hitboxes/hurtboxes nodes
-- [ ] add health component
+- [x] add hitboxes/hurtboxes nodes
+- [x] add health component
 - [ ] add stationary enemy
 - [ ] add basic player attack
 - [ ] add knockback

@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://b7047g2tnlugm"]
 
 [ext_resource type="Texture2D" uid="uid://csaax8g6145yr" path="res://assets/character.png" id="1_eh0f6"]
+[ext_resource type="Script" uid="uid://cgxq3ih328puc" path="res://components/AnimationManager.gd" id="2_ks8m5"]
+[ext_resource type="Script" uid="uid://dmnvl3ds08epr" path="res://components/Movement.gd" id="2_ojs4q"]
+[ext_resource type="Script" uid="uid://c5ua26e4j6yun" path="res://components/InputManager.gd" id="3_lw5ub"]
+[ext_resource type="Script" uid="uid://5168b5trcim8" path="res://components/combat/Health.gd" id="5_a1f57"]
+[ext_resource type="Script" uid="uid://b5jl0caf7jna1" path="res://components/combat/Hurtbox.gd" id="6_25mxy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ojs4q"]
 atlas = ExtResource("1_eh0f6")
@@ -164,12 +169,39 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_eh0f6"]
 radius = 7.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_a1f57"]
+radius = 6.0
+
 [node name="Player" type="CharacterBody2D" unique_id=2100962722]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2138158245]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2138158245 node_paths=PackedStringArray("movement")]
 sprite_frames = SubResource("SpriteFrames_732nv")
 animation = &"up-run"
 frame_progress = 0.9602076
+script = ExtResource("2_ks8m5")
+movement = NodePath("../Movement")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=101788724]
 shape = SubResource("CircleShape2D_eh0f6")
+
+[node name="Movement" type="Node2D" parent="." unique_id=1585002373 node_paths=PackedStringArray("character")]
+script = ExtResource("2_ojs4q")
+character = NodePath("..")
+metadata/_custom_type_script = "uid://dmnvl3ds08epr"
+
+[node name="InputManager" type="Node2D" parent="." unique_id=918153922 node_paths=PackedStringArray("movement")]
+script = ExtResource("3_lw5ub")
+movement = NodePath("../Movement")
+metadata/_custom_type_script = "uid://c5ua26e4j6yun"
+
+[node name="Health" type="Node2D" parent="." unique_id=1265946300 node_paths=PackedStringArray("hurtboxes")]
+script = ExtResource("5_a1f57")
+hurtboxes = [NodePath("../Hurtbox")]
+metadata/_custom_type_script = "uid://5168b5trcim8"
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=446435476]
+script = ExtResource("6_25mxy")
+metadata/_custom_type_script = "uid://b5jl0caf7jna1"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=730292581]
+shape = SubResource("CircleShape2D_a1f57")

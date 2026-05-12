@@ -4,12 +4,15 @@ class_name Health
 signal dead
 
 @export
-var hurtboxes: Array[Hurtbox] = []
+var movement: Movement
 
 @export
 var max_health: float = 10
 @onready
 var health := max_health
+
+@export
+var hurtboxes: Array[Hurtbox] = []
 
 func _ready() -> void:
 	for h in hurtboxes:
@@ -17,5 +20,6 @@ func _ready() -> void:
 		
 func take_damage(box: Hitbox):
 	health -= box.damage
+	print(health)
 	if health <= 0:
 		dead.emit()

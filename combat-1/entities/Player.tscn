@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://5168b5trcim8" path="res://components/combat/Health.gd" id="5_a1f57"]
 [ext_resource type="Script" uid="uid://b5jl0caf7jna1" path="res://components/combat/Hurtbox.gd" id="6_25mxy"]
 [ext_resource type="Script" uid="uid://cyo7853l13afx" path="res://components/combat/AttackManager.gd" id="7_25mxy"]
+[ext_resource type="Script" uid="uid://cjw6uctcxo85" path="res://components/Stamina.gd" id="8_dv4ir"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ojs4q"]
 atlas = ExtResource("1_eh0f6")
@@ -173,7 +174,7 @@ radius = 7.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_a1f57"]
 radius = 6.0
 
-[node name="Player" type="CharacterBody2D" unique_id=2100962722]
+[node name="Player" type="CharacterBody2D" unique_id=2100962722 groups=["player"]]
 collision_layer = 3
 motion_mode = 1
 platform_on_leave = 2
@@ -188,19 +189,22 @@ movement = NodePath("../Movement")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=101788724]
 shape = SubResource("CircleShape2D_eh0f6")
 
-[node name="Movement" type="Node2D" parent="." unique_id=1585002373 node_paths=PackedStringArray("character")]
+[node name="Movement" type="Node2D" parent="." unique_id=1585002373 node_paths=PackedStringArray("character", "health")]
 script = ExtResource("2_ojs4q")
 character = NodePath("..")
+health = NodePath("../Health")
 metadata/_custom_type_script = "uid://dmnvl3ds08epr"
 
-[node name="InputManager" type="Node2D" parent="." unique_id=918153922 node_paths=PackedStringArray("movement", "attackManager")]
+[node name="InputManager" type="Node2D" parent="." unique_id=918153922 node_paths=PackedStringArray("movement", "attackManager", "stamina")]
 script = ExtResource("3_lw5ub")
 movement = NodePath("../Movement")
 attackManager = NodePath("../AttackManager")
+stamina = NodePath("../Stamina")
 metadata/_custom_type_script = "uid://c5ua26e4j6yun"
 
-[node name="Health" type="Node2D" parent="." unique_id=1265946300 node_paths=PackedStringArray("hurtboxes")]
+[node name="Health" type="Node2D" parent="." unique_id=1265946300 node_paths=PackedStringArray("movement", "hurtboxes")]
 script = ExtResource("5_a1f57")
+movement = NodePath("../Movement")
 hurtboxes = [NodePath("../Hurtbox")]
 metadata/_custom_type_script = "uid://5168b5trcim8"
 
@@ -216,4 +220,10 @@ shape = SubResource("CircleShape2D_a1f57")
 [node name="AttackManager" type="Node2D" parent="." unique_id=1073539511 node_paths=PackedStringArray("movement")]
 script = ExtResource("7_25mxy")
 movement = NodePath("../Movement")
+layer = 2
+mask = 4
 metadata/_custom_type_script = "uid://cyo7853l13afx"
+
+[node name="Stamina" type="Node2D" parent="." unique_id=465831376]
+script = ExtResource("8_dv4ir")
+metadata/_custom_type_script = "uid://cjw6uctcxo85"

@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cpekvr0fp11i3"]
+
+[ext_resource type="Script" uid="uid://cistxhiev8k7j" path="res://components/combat/Hitbox.gd" id="1_puapt"]
+[ext_resource type="Texture2D" uid="uid://clfu5x06ufska" path="res://assets/big-stab.png" id="2_puapt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3nt63"]
+size = Vector2(61, 20)
+
+[node name="Slash" type="Area2D" unique_id=1763413894]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_puapt")
+metadata/_custom_type_script = "uid://cistxhiev8k7j"
+
+[node name="Slash" type="Sprite2D" parent="." unique_id=623530646]
+z_index = 1
+position = Vector2(32, 0)
+texture = ExtResource("2_puapt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1854613241]
+position = Vector2(32.5, 0)
+shape = SubResource("RectangleShape2D_3nt63")
+
+[node name="Timer" type="Timer" parent="." unique_id=899376419]
+wait_time = 0.1
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="queue_free"]

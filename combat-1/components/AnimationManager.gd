@@ -17,6 +17,6 @@ func _process(_delta: float) -> void:
 			facing = "up"
 		elif movement.direction.y > 0:
 			facing = "down"
-		play(facing+"-run", max(movement.modifier,0.5))
+		play(facing+"-run", max((movement.modifier*movement.SPEED)/100,0.5))
 	else:
 		play(facing+"-idle")

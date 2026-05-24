@@ -14,14 +14,15 @@
 - [x] add movement component
 - [x] add player animation controller
 - [x] add input component
-- [ ] add dodge roll
+- [x] add dodge roll
 - [x] add hitboxes/hurtboxes nodes
 - [x] add health component
-- [ ] add stationary enemy
-- [ ] add basic player attack
-- [ ] add knockback
-- [ ] add slow/wide enemy attack with warning
-- [ ] add fast/narrow enemy attack with warning
+- [x] add stationary enemy
+- [x] add basic player attack
+- [x] add player stamina
+- [x] add knockback
+- [x] add slow/wide enemy attack with warning
+- [x] add fast/narrow enemy attack with warning
 - [ ] add stuns from too much knockback
 
 #### Learnings

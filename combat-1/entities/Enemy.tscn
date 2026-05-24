@@ -5,6 +5,11 @@
 [ext_resource type="Script" uid="uid://b5jl0caf7jna1" path="res://components/combat/Hurtbox.gd" id="3_dsp8k"]
 [ext_resource type="Texture2D" uid="uid://csaax8g6145yr" path="res://assets/character.png" id="4_66spp"]
 [ext_resource type="Script" uid="uid://cgxq3ih328puc" path="res://components/AnimationManager.gd" id="5_5g4gd"]
+[ext_resource type="Script" uid="uid://ddx0uayt71gry" path="res://components/AI.gd" id="6_8cir8"]
+[ext_resource type="Script" uid="uid://cyo7853l13afx" path="res://components/combat/AttackManager.gd" id="7_dsp8k"]
+[ext_resource type="PackedScene" uid="uid://b6obgal1nmprb" path="res://attacks/Stab.tscn" id="8_im3kb"]
+[ext_resource type="PackedScene" uid="uid://0818b3w2gysa" path="res://attacks/BigSlash.tscn" id="9_ijd6d"]
+[ext_resource type="PackedScene" uid="uid://cpekvr0fp11i3" path="res://attacks/BigStab.tscn" id="10_r1qvq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pedfs"]
 radius = 15.0
@@ -180,10 +185,13 @@ platform_on_leave = 2
 [node name="Movement" type="Node2D" parent="." unique_id=1511197108 node_paths=PackedStringArray("character")]
 script = ExtResource("1_pedfs")
 character = NodePath("..")
+SPEED = 25.0
 metadata/_custom_type_script = "uid://dmnvl3ds08epr"
 
-[node name="Health" type="Node2D" parent="." unique_id=1076302287 node_paths=PackedStringArray("hurtboxes")]
+[node name="Health" type="Node2D" parent="." unique_id=1076302287 node_paths=PackedStringArray("movement", "hurtboxes")]
 script = ExtResource("2_8cir8")
+movement = NodePath("../Movement")
+max_health = 25.0
 hurtboxes = [NodePath("../Hurtbox")]
 metadata/_custom_type_script = "uid://5168b5trcim8"
 
@@ -205,3 +213,54 @@ movement = NodePath("../Movement")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=684402547]
 shape = SubResource("CircleShape2D_8cir8")
+
+[node name="AI" type="Node2D" parent="." unique_id=2093719462 node_paths=PackedStringArray("movement", "attacks")]
+script = ExtResource("6_8cir8")
+movement = NodePath("../Movement")
+attacks = [NodePath("../BasicAttack"), NodePath("../Combo1"), NodePath("../Combo2"), NodePath("../Combo3")]
+metadata/_custom_type_script = "uid://ddx0uayt71gry"
+
+[node name="BasicAttack" type="Node2D" parent="." unique_id=95351932 node_paths=PackedStringArray("movement")]
+script = ExtResource("7_dsp8k")
+movement = NodePath("../Movement")
+layer = 4
+mask = 2
+min_time = 750
+max_time = 850
+recoil_time = 1.5
+turn_rate = 0.1
+metadata/_custom_type_script = "uid://cyo7853l13afx"
+
+[node name="Combo1" type="Node2D" parent="." unique_id=2137981168 node_paths=PackedStringArray("movement")]
+script = ExtResource("7_dsp8k")
+movement = NodePath("../Movement")
+attack = ExtResource("8_im3kb")
+layer = 4
+mask = 2
+min_time = 250
+max_time = 500
+recoil_time = 1.5
+metadata/_custom_type_script = "uid://cyo7853l13afx"
+
+[node name="Combo2" type="Node2D" parent="." unique_id=728160262 node_paths=PackedStringArray("movement")]
+script = ExtResource("7_dsp8k")
+movement = NodePath("../Movement")
+attack = ExtResource("9_ijd6d")
+layer = 4
+mask = 2
+min_time = 750
+max_time = 1500
+recoil_time = 1.5
+turn_rate = 0.05
+metadata/_custom_type_script = "uid://cyo7853l13afx"
+
+[node name="Combo3" type="Node2D" parent="." unique_id=2033658347 node_paths=PackedStringArray("movement")]
+script = ExtResource("7_dsp8k")
+movement = NodePath("../Movement")
+attack = ExtResource("10_r1qvq")
+layer = 4
+mask = 2
+max_time = 1500
+recoil_time = 2.0
+turn_rate = 0.1
+metadata/_custom_type_script = "uid://cyo7853l13afx"

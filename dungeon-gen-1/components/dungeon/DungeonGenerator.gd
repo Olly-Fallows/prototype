@@ -1,6 +1,8 @@
 extends Node2D
 class_name DungeonGenerator
 
+var player := preload("uid://belclr170af80")
+
 @export
 var tilemap: TileMapLayer
 
@@ -11,7 +13,7 @@ var room_min_radius: int
 @export
 var room_max_radius: int
 @export
-var target_size: Vector2
+var target_size: Vector2 = Vector2(10,10)
 @export
 var padding: int = 5
 
@@ -30,7 +32,7 @@ func generate_dungeon():
 		rooms.append(
 			DungeonRoom.create(
 				randi_range(room_min_radius, room_max_radius),
-				randi_range(0, DungeonRoom.RoomType.size()-1)
+				1#randi_range(0, DungeonRoom.RoomType.size()-1)
 			)
 		)
 	for r in rooms:
@@ -38,7 +40,6 @@ func generate_dungeon():
 			randf_range(-target_size.x/2, target_size.x/2),
 			randf_range(-target_size.y/2, target_size.y/2)
 		)
-	queue_redraw()
 	fix_overlap.call_deferred()
 	
 func fix_overlap():
@@ -49,18 +50,18 @@ func fix_overlap():
 		for r2 in rooms:
 			if r2 == r:
 				continue
-			var dist = r.center - r2.center
+			var dist = ceil(r.center) - ceil(r2.center)
 			overlap_direction += dist.normalized()
 			if dist.length() <= r.radius + r2.radius + padding:
 				overlapping = true
 		if overlapping:
-			r.center += overlap_direction.normalized()*randf_range(1, rooms.size())
+			r.center += overlap_direction.normalized()*randf_range(1, rooms.size()/2.0)
 			repeat = true
-	queue_redraw()
 	if repeat:
 		fix_overlap.call_deferred()
 	else:
 		for r in rooms:
+			r.center = ceil(r.center)
 			var closest = null
 			var distance: float
 			for r2 in rooms:
@@ -127,6 +128,8 @@ func map_subgraphs() -> Array:
 func make_connections() -> void:
 	var subgroups = map_subgraphs()
 	if subgroups.size() <= 1:
+		update_tilemap.call_deferred()
+		spawn_player.call_deferred()
 		return
 	var group_pos: Array[Vector2] = []
 	for g in subgroups:
@@ -163,20 +166,16 @@ func make_connections() -> void:
 		room1.connections.append(room2)
 		room2.connections.append(room1)
 	make_connections.call_deferred()
-	queue_redraw()
 	
-func _draw() -> void:
+func cleanup_duplicates() -> void:
 	for r in rooms:
 		for c in r.connections:
-			draw_line(r.center, c.center, Color.RED, 5)
-	for r in rooms:
-		match (r.type):
-			DungeonRoom.RoomType.CIRCLE:
-				draw_circle(r.center, r.radius, Color.CYAN)
-			DungeonRoom.RoomType.SQUARE:
-				draw_rect(Rect2(r.center-Vector2(r.radius, r.radius), Vector2(r.radius, r.radius)*2), Color.CYAN)
-	var cells: Array[Vector2i] = []
+			c.connections.erase(r)
 	
+func update_tilemap() -> void:
+	cleanup_duplicates()
+	var cells: Array[Vector2i] = []
+	var horizontal: bool = true
 	for r in rooms:
 		for x in range(-r.radius, r.radius):
 			for y in range(-r.radius, r.radius):
@@ -185,5 +184,48 @@ func _draw() -> void:
 						cells.append(Vector2i(r.center)+Vector2i(x, y))
 				else:
 					cells.append(Vector2i(r.center)+Vector2i(x, y))
-	
+		for c in r.connections:
+			var thickness = randi_range(1, 8)
+			print(c)
+			horizontal = not horizontal
+			var room1: DungeonRoom
+			var room2: DungeonRoom
+			if r.center.length() <= c.center.length():
+				room1 = r
+				room2 = c
+			else:
+				room1 = c
+				room2 = r
+			var pos: Vector2i = room1.center
+			var goal: Vector2i = Vector2i(room2.center)
+			while not pos == goal:
+				for x in range(-thickness,thickness):
+					for y in range(-thickness,thickness):
+						if not pos+Vector2i(x, y) in cells:
+							cells.append(pos+Vector2i(x, y))
+				var d = pos-goal
+				if horizontal:
+					if d.x > 0:
+						pos.x = max(pos.x-thickness*2, goal.x)
+					elif d.x < 0:
+						pos.x = min(pos.x+thickness*2, goal.x)
+					elif d.y > 0:
+						pos.y = max(pos.y-thickness*2, goal.y)
+					elif d.y < 0:
+						pos.y = min(pos.y+thickness*2, goal.y)
+				else:
+					if d.x > 0:
+						pos.x = max(pos.x-thickness*2, goal.x)
+					elif d.x < 0:
+						pos.x = min(pos.x+thickness*2, goal.x)
+					elif d.y > 0:
+						pos.y = max(pos.y-thickness*2, goal.y)
+					elif d.y < 0:
+						pos.y = min(pos.y+thickness*2, goal.y)
 	tilemap.set_cells_terrain_connect(cells, 0, 0)
+	
+func spawn_player() -> void:
+	if get_tree().get_first_node_in_group("player") == null:
+		var p = player.instantiate()
+		get_tree().current_scene.add_child(p)
+		p.global_position = tilemap.map_to_local(rooms[0].center)

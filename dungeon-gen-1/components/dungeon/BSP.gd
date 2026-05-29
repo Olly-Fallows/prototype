@@ -13,17 +13,49 @@ class Room:
 	var subrooms: Array[Room] = []
 	var pos: Vector2i
 	var size: Vector2i
+	
+	static func from(p: Vector2, s: Vector2i) -> Room:
+		var r := Room.new()
+		r.pos = p
+		r.size = s
+		return r
 
 var tree: Room = Room.new()
 
 func _ready() -> void:
 	# Make tree
+	tree.pos = Vector2i()
+	tree.size = size
 	for a in range(1, room_count):
-		var current_room := tree
-		while current_room.subrooms.size() > 0:
-			current_room = current_room.subrooms.pick_random()
-		current_room.subrooms.append(Room.new())
-		current_room.subrooms.append(Room.new())
+		var r := tree
+		while r.subrooms.size() > 0:
+			r = r.subrooms.pick_random()
+		var s1: Vector2i
+		var s2: Vector2i
+		var p1: Vector2i = r.pos
+		var p2: Vector2i = r.pos
+		if r.size.x >= r.size.y:
+			if r.size.x % 2 == 1:
+				s1 = r.size-Vector2i(1,0)
+				s1.x /= 2
+				s2 = s1
+			else:
+				s1 = r.size
+				s1.x /= 2
+				s2 = s1-Vector2i(1,0)
+			p2.x += s1.x+1
+		else:
+			if r.size.y % 2 == 1:
+				s1 = r.size-Vector2i(0,1)
+				s1.y /= 2
+				s2 = s1
+			else:
+				s1 = r.size
+				s1.y /= 2
+				s2 = s1-Vector2i(0,1)
+			p2.y += s1.y+1
+		r.subrooms.append(Room.from(p1,s1))
+		r.subrooms.append(Room.from(p2,s2))
 	
 	# Init space
 	var space := []
@@ -46,62 +78,15 @@ func _ready() -> void:
 					break
 				space[x][y] = 1
 	
-	space = add_doors(space, tree)
-	
 	update_tilemap(space)
 
 func traverse_tree(room: Room) -> Array[Room]:
-	var terminals: Array[Room] = []
-	if room.subrooms.size() > 0:
-		var p = room.pos
-		var s = room.size
-		var offset: Vector2i
-		var space: Vector2i
-		if s.x >= s.y:
-			s.x /= room.subrooms.size()
-			s.x -= 1
-			offset = Vector2i(1+s.x, 0)
-			space = Vector2i(1,0)
-		else:
-			s.y /= room.subrooms.size()
-			s.y -= 1
-			offset = Vector2i(0, 1+s.y)
-			space = Vector2i(0,1)
-		for r in room.subrooms:
-			r.pos = p
-			r.size = s
-			var result = traverse_tree(r)
-			if result != null:
-				terminals.append_array(result)
-			p += offset
-			if r == room.subrooms[-1]:
-				r.size += space
-	else:
+	if room.subrooms.size() == 0:
 		return [room]
-	return terminals
-
-func add_doors(space: Array, room: Room) -> Array:
+	var rooms: Array[Room] = []
 	for r in room.subrooms:
-		if r.subrooms.size() > 0:
-			for a in range(0, r.subrooms.size()-1):
-				if r.subrooms[a].subrooms.size() > 0:
-					space = add_doors(space, r)
-				elif r.subrooms[a+1].subrooms.size() == 0:
-					var p1 = r.subrooms[a].pos + Vector2i(r.subrooms[a].size/2.0)
-					var p2 = r.subrooms[a+1].pos + Vector2i(r.subrooms[a+1].size/2.0)
-					if p1.x == p2.x:
-						var offset = randi_range(0, r.subrooms[a].size.x-2)-((r.subrooms[a].size.x-2)/2.0)
-						p1.x += offset
-						p2.x += offset
-						for b in randi_range(p1.y, p2.y):
-							space[p1.x][b] = 1
-					if p1.y == p2.y:
-						var offset = randi_range(0, r.subrooms[a].size.y-2)-((r.subrooms[a].size.y-2)/2.0)
-						p1.y += offset
-						p2.y += offset
-						for b in randi_range(p1.x, p2.x):
-							space[b][p1.y] = 1
-	return space
+		rooms.append_array(traverse_tree(r))
+	return rooms
 
 func update_tilemap(space: Array) -> void:
 	var cells: Array[Vector2i] = []

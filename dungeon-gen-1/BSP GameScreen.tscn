@@ -348,7 +348,6 @@ sources/3 = SubResource("TileSetAtlasSource_suwf6")
 [node name="BSP" type="Node2D" parent="." unique_id=1215540419 node_paths=PackedStringArray("tilemap")]
 script = ExtResource("1_2mpyw")
 size = Vector2i(128, 72)
-room_count = 32
 tilemap = NodePath("../TileMapLayer")
 metadata/_custom_type_script = "uid://dlwrrbsko0bkd"
 

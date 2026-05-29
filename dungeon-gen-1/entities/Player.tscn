@@ -185,7 +185,7 @@ shape = SubResource("CircleShape2D_eh0f6")
 [node name="Movement" type="Node2D" parent="." unique_id=1585002373 node_paths=PackedStringArray("character")]
 script = ExtResource("2_ojs4q")
 character = NodePath("..")
-SPEED = 150.0
+SPEED = 200.0
 
 [node name="InputManager" type="Node2D" parent="." unique_id=918153922 node_paths=PackedStringArray("movement")]
 script = ExtResource("3_lw5ub")

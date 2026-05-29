@@ -349,10 +349,10 @@ sources/3 = SubResource("TileSetAtlasSource_qufq8")
 script = ExtResource("1_vau7r")
 tilemap = NodePath("../TileMapLayer")
 room_count = 20
-room_min_radius = 10
-room_max_radius = 15
+room_min_radius = 5
+room_max_radius = 10
 target_size = Vector2(1, 1)
-padding = 0
+padding = 2
 metadata/_custom_type_script = "uid://ksnhnn7ca0mw"
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=386910605]

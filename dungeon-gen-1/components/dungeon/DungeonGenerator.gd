@@ -185,7 +185,7 @@ func update_tilemap() -> void:
 				else:
 					cells.append(Vector2i(r.center)+Vector2i(x, y))
 		for c in r.connections:
-			var thickness = randi_range(1, 8)
+			var thickness = randi_range(1, 2)
 			print(c)
 			horizontal = not horizontal
 			var room1: DungeonRoom

@@ -7,6 +7,7 @@ var min_padding: float = 0
 var max_padding: float = 0
 
 var subrooms: Array[Room]
+var corridors: Array[Corridor]
 
 var content: Space
 
@@ -96,6 +97,26 @@ func end_rooms() -> Array[Room]:
 
 func center() -> Vector2i:
 	return position + Vector2i(size/2.0)
+
+
+func make_corridors() -> Array[Corridor]:
+	if subrooms.size() == 0:
+		return []
+	corridors = []
+	for r in subrooms:
+		corridors.append_array(r.make_corridors())
+	for a in range(subrooms.size()-1):
+		var start_options: Array[Room] = subrooms[a].end_rooms()
+		var end_options: Array[Room] = subrooms[a+1].end_rooms()
+		var start = start_options[0]
+		var end = end_options[0]
+		for s in start_options:
+			for e in end_options:
+				if (start.center()-end.center()).length() > (s.center()-e.center()).length():
+					start = s
+					end = e
+		corridors.append(Corridor.from(start, end))
+	return corridors
 
 static func from(
 	p: Vector2i, 

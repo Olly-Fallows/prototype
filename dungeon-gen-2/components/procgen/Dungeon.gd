@@ -30,29 +30,10 @@ func _ready() -> void:
 	for a in range(50):
 		root.partition([2].pick_random())
 	
-	corridors = make_corridors(root)
+	corridors = root.make_corridors()
 	print(corridors)
 	
 	queue_redraw()
-
-func make_corridors(room: Room) -> Array[Corridor]:
-	if room.subrooms.size() == 0:
-		return []
-	var cs: Array[Corridor] = []
-	for r in room.subrooms:
-		cs.append_array(make_corridors(r))
-	for a in range(room.subrooms.size()-1):
-		var start_options: Array[Room] = room.subrooms[a].end_rooms()
-		var end_options: Array[Room] = room.subrooms[a+1].end_rooms()
-		var start = start_options[0]
-		var end = end_options[0]
-		for s in start_options:
-			for e in end_options:
-				if (start.center()-end.center()).length() > (s.center()-e.center()).length():
-					start = s
-					end = e
-		cs.append(Corridor.from(start, end))
-	return cs
 
 func _draw() -> void:
 	var space = root.to_space()

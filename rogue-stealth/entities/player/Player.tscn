@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://3rb5v0yfkd41"]
+
+[ext_resource type="SpriteFrames" uid="uid://ddp36pvhrq5eh" path="res://resources/spriteframes/prototype_grey.tres" id="1_eaotn"]
+[ext_resource type="Script" uid="uid://8oipggrbegd1" path="res://components/entities/DirectionalSprite.gd" id="1_mab2k"]
+[ext_resource type="Script" uid="uid://dlcs7ebbjvdon" path="res://components/entities/Movement.gd" id="2_l3c03"]
+[ext_resource type="Script" uid="uid://db2dgl2ayrvbf" path="res://components/entities/InputManager.gd" id="3_eaotn"]
+
+[node name="Player" type="CharacterBody2D" unique_id=1039665846]
+
+[node name="DirectionalSprite" type="AnimatedSprite2D" parent="." unique_id=2088778307 node_paths=PackedStringArray("character")]
+sprite_frames = ExtResource("1_eaotn")
+animation = &"idle-down"
+script = ExtResource("1_mab2k")
+character = NodePath("..")
+metadata/_custom_type_script = "uid://8oipggrbegd1"
+
+[node name="Movement" type="Node2D" parent="." unique_id=1427129381 node_paths=PackedStringArray("character")]
+script = ExtResource("2_l3c03")
+character = NodePath("..")
+metadata/_custom_type_script = "uid://dlcs7ebbjvdon"
+
+[node name="InputManager" type="Node2D" parent="." unique_id=1841812072 node_paths=PackedStringArray("movement")]
+script = ExtResource("3_eaotn")
+movement = NodePath("../Movement")
+metadata/_custom_type_script = "uid://db2dgl2ayrvbf"

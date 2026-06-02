@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://0ifvib80ykdr"]
+
+[ext_resource type="Shader" uid="uid://t428nkvdgons" path="res://resources/shader/Whiteout.gdshader" id="1_8gmte"]
+
+[resource]
+shader = ExtResource("1_8gmte")

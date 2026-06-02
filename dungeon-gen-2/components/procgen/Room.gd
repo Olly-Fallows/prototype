@@ -68,22 +68,38 @@ func partition(count: int = 2) -> void:
 func bsp_walkway() -> void:
 	pass
 	
-func cellular_automata(density: float, iterations: int) -> void:
+func cellular_automata(density: float, iterations: int, toplevel: bool = false, min_room: bool = false) -> void:
 	if subrooms.size() > 0:
-		return
-	if content == null:
-		content = Space.create_random_space(position, size, density)
-	for i in iterations:
-		content.do_ca()
+		for r in subrooms:
+			r.cellular_automata(density, iterations, false, min_room)
+	else:
+		if content == null:
+			if min_room:
+				content = Space.create_random_space(position, size, density, min_padding)
+				content.add(Space.create_uniform_space(position,size, 1, max_padding))
+			else:
+				content = Space.create_random_space(position, size, density, randf_range(min_padding, max_padding))
+	if toplevel:
+		to_space(false, 1)
+		for i in iterations:
+			content.do_ca()
 
-func to_space() -> Space:
+func to_space(clear: bool = false, corridor_size: int = 0) -> Space:
+	if clear:
+		content = null
+	if content != null:
+		return content
 	if subrooms.size() == 0:
 		if content == null:
 			return Space.create_uniform_space(position, size, 1, randf_range(min_padding, max_padding))
 		return content
 	content = Space.create_uniform_space(position, size, 0)
+	for c in make_corridors():
+		if c != null:
+			content.add(c.to_space(clear, corridor_size))
 	for r in subrooms:
-		content.add(r.to_space())
+		if r != null:
+			content.add(r.to_space(clear))
 	return content
 
 func end_rooms() -> Array[Room]:
@@ -99,10 +115,13 @@ func center() -> Vector2i:
 	return position + Vector2i(size/2.0)
 
 
-func make_corridors() -> Array[Corridor]:
+func make_corridors(clear: bool = false) -> Array[Corridor]:
+	if clear:
+		corridors = []
 	if subrooms.size() == 0:
 		return []
-	corridors = []
+	if corridors.size() > 0:
+		return corridors
 	for r in subrooms:
 		corridors.append_array(r.make_corridors())
 	for a in range(subrooms.size()-1):
@@ -117,6 +136,12 @@ func make_corridors() -> Array[Corridor]:
 					end = e
 		corridors.append(Corridor.from(start, end))
 	return corridors
+
+func padded_position() -> Vector2i:
+	return position + Vector2i((size*max_padding)/2.0)
+
+func padded_size() -> Vector2i:
+	return size * (1-max_padding)
 
 static func from(
 	p: Vector2i, 

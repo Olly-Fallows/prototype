@@ -6,6 +6,6 @@
 
 [node name="Dungeon" type="Node2D" parent="." unique_id=1753978728]
 script = ExtResource("1_vau7r")
-min_padding = 0.1
+min_padding = 0.2
 max_padding = 0.5
 metadata/_custom_type_script = "uid://b6xdlcy6hskgl"

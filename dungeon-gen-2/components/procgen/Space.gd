@@ -36,25 +36,18 @@ func do_ca():
 	cells = new_cells
 
 func add(space: Space):
-	#if space.position.x < position.x:
-		#return
-	#if space.position.y < position.y:
-		#return
-	#if space.position.x + space.size.x > position.x + size.x:
-		#return
-	#if space.position.y + space.size.y > position.y + size.y:
-		#return
 	for x in range(space.position.x, space.position.x+space.size.x):
 		if x-position.x < 0:
 			continue
-		if x-position.x > cells.size():
+		if x-position.x >= cells.size():
 			continue
 		for y in range(space.position.y, space.position.y+space.size.y):
 			if y-position.y < 0:
 				continue
-			if y-position.y > cells[x-position.x].size():
+			if y-position.y >= cells[x-position.x].size():
 				continue
-			cells[x-position.x][y-position.y] = space.cells[x-space.position.x][y-space.position.y]
+			if space.cells[x-space.position.x][y-space.position.y] != 0:
+				cells[x-position.x][y-position.y] = space.cells[x-space.position.x][y-space.position.y]
 
 static func create_uniform_space(p: Vector2i, s: Vector2i, v: int=0, padding: float=0) -> Space:
 	var space := Space.new()
@@ -66,13 +59,13 @@ static func create_uniform_space(p: Vector2i, s: Vector2i, v: int=0, padding: fl
 			space.cells[x].append(v)
 	return space
 
-static func create_random_space(p: Vector2i, s: Vector2i, d: float) -> Space:
+static func create_random_space(p: Vector2i, s: Vector2i, d: float, padding: float=0) -> Space:
 	var space := Space.new()
-	space.position = p
-	space.size = s
-	for x in s.x:
+	space.size = s * (1-padding)
+	space.position = p + Vector2i((s - space.size)/2.0)
+	for x in space.size.x:
 		space.cells.append([])
-		for y in s.y:
+		for y in space.size.y:
 			if randf() <= d:
 				space.cells[x].append(1)
 			else:

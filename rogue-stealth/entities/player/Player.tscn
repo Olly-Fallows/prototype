@@ -5,9 +5,15 @@
 [ext_resource type="Script" uid="uid://dlcs7ebbjvdon" path="res://components/entities/Movement.gd" id="2_l3c03"]
 [ext_resource type="Script" uid="uid://db2dgl2ayrvbf" path="res://components/entities/InputManager.gd" id="3_eaotn"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_eaotn"]
+radius = 5.0
+
 [node name="Player" type="CharacterBody2D" unique_id=1039665846]
+y_sort_enabled = true
 
 [node name="DirectionalSprite" type="AnimatedSprite2D" parent="." unique_id=2088778307 node_paths=PackedStringArray("character")]
+y_sort_enabled = true
+position = Vector2(0, -3)
 sprite_frames = ExtResource("1_eaotn")
 animation = &"idle-down"
 script = ExtResource("1_mab2k")
@@ -17,9 +23,13 @@ metadata/_custom_type_script = "uid://8oipggrbegd1"
 [node name="Movement" type="Node2D" parent="." unique_id=1427129381 node_paths=PackedStringArray("character")]
 script = ExtResource("2_l3c03")
 character = NodePath("..")
+speed = 75.0
 metadata/_custom_type_script = "uid://dlcs7ebbjvdon"
 
 [node name="InputManager" type="Node2D" parent="." unique_id=1841812072 node_paths=PackedStringArray("movement")]
 script = ExtResource("3_eaotn")
 movement = NodePath("../Movement")
 metadata/_custom_type_script = "uid://db2dgl2ayrvbf"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1528012950]
+shape = SubResource("CircleShape2D_eaotn")

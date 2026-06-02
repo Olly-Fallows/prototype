@@ -20,18 +20,17 @@ func _input(event: InputEvent) -> void:
 		queue_redraw()
 
 func _ready() -> void:
+	#seed(1)
+	
 	root = Room.new()
 	root.size = size
 	root.position = Vector2i()
 	root.min_padding = min_padding
 	root.max_padding = max_padding
 	
-	#root.cellular_automata(0.5, 10)
-	for a in range(50):
-		root.partition([2].pick_random())
-	
-	corridors = root.make_corridors()
-	print(corridors)
+	for a in range(75):
+		root.partition(2)
+	root.cellular_automata(0.55, 5, true, true)
 	
 	queue_redraw()
 
@@ -41,5 +40,6 @@ func _draw() -> void:
 		for y in range(space.size.y):
 			if space.cells[x][y] == 1:
 				draw_rect(Rect2(x*display_scale, y*display_scale, display_scale, display_scale), Color.RED)
-	for c in corridors:
-		draw_line(c.start*display_scale, c.end*display_scale, Color.BLACK, 2)
+	#for c in root.make_corridors():
+		#if c != null:
+			#draw_line(c.start*display_scale, c.end*display_scale, Color.BLACK, 2)
